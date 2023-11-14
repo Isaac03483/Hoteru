@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\EmployeeController;
 use \App\Http\Controllers\EmployeeTypeController;
 use \App\Http\Controllers\AuthController;
+use \App\Http\Controllers\RoomTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('employees', [EmployeeController::class, 'index']);
-//Route::get('employees/{username}/{password}', [EmployeeController::class, 'show']);
+Route::post('employees', [EmployeeController::class, 'store']);
 
-Route::get('employee-type', [EmployeeTypeController::class, 'index']);
-Route::get('employee-type/{id}', [EmployeeTypeController::class, 'show']);
+Route::get('employee-types', [EmployeeTypeController::class, 'index']);
+Route::get('employee-types/{id}', [EmployeeTypeController::class, 'show']);
+Route::post('employee-types', [EmployeeTypeController::class, 'store']);
 
 Route::get('auth/{username}/{password}', [AuthController::class, 'show']);
+
+Route::get('room-types', [RoomTypeController::class, 'index']);
+Route::post('room-types', [RoomTypeController::class, 'store']);

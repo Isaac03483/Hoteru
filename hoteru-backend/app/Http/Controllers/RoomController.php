@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmployeeType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
-class EmployeeTypeController extends Controller
+class RoomController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +12,6 @@ class EmployeeTypeController extends Controller
     public function index()
     {
         //
-        return EmployeeType::all();
     }
 
     /**
@@ -24,25 +20,20 @@ class EmployeeTypeController extends Controller
     public function store(Request $request)
     {
         //
-        $employeeType = new EmployeeType;
-        $employeeType->type = $request->type;
-
-        $employeeType->save();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show(string $id)
     {
         //
-        return EmployeeType::query()->select()->where('id',$id)->firstOrFail();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -50,7 +41,7 @@ class EmployeeTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(string $id)
     {
         //
     }

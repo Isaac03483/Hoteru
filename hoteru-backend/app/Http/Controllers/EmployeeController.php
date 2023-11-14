@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EmployeeType;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -13,7 +14,24 @@ class EmployeeController extends Controller
     public function index()
     {
         //
-        return Employee::all('id','username','name','employee_type_id');
+        $employees = Employee::all();
+        $employees_response = [];
+
+        foreach ($employees as $employee) {
+            $type = EmployeeType::query()->select('type')
+                ->where('id',$employee->employee_type_id)->first();
+
+            $e = new Employee;
+            $e->id = $employee->id;
+            $e->username = $employee->username;
+            $e->name = $employee->name;
+            $e->password = $employee->password;
+            $e->type = $type->type;
+
+            array_push($employees_response, $e);
+        }
+
+        return $employees_response;
     }
 
     /**
