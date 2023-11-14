@@ -14,13 +14,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-
   flex-direction: column;
 }
 
-.form-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
 .form-input {
   width: 20rem;
   margin-bottom: 10px;

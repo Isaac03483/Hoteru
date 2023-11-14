@@ -8,7 +8,7 @@
       <mat-card-title style="font-size: 2rem;">Iniciar Sesión</mat-card-title>
     </mat-card-header>
     <mat-card-content style="margin-top: 20px">
-      <form class="form-container" [formGroup]="authForm" (ngSubmit)="validate()">
+      <form class="center" [formGroup]="authForm" (ngSubmit)="validate()">
         <mat-form-field class="form-input" appearance="outline">
           <mat-label>Nombre de usuario</mat-label>
           <input formControlName="username" matInput type="text" placeholder="Ingrese su nombre de usuario">
