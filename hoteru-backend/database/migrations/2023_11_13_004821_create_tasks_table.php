@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\EmployeeType;
 
 return new class extends Migration
 {
@@ -16,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->date('date');
+            $table->foreignIdFor(EmployeeType::class);
             $table->integer('employee_id')->default(0);
             $table->enum('state', ['pendiente', 'asignada','finalizada']);
         });

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(RoomType::class);
+            $table->foreignIdFor(RoomType::class)->constrained();
             $table->enum('state', ['disponible', 'ocupada']);
         });
     }

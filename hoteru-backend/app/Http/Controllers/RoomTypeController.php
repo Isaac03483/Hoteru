@@ -47,8 +47,9 @@ class RoomTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
         //
+        RoomType::destroy($id);
     }
 }

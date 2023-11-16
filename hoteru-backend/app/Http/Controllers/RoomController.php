@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Room;
+use App\Models\RoomType;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
@@ -12,6 +14,22 @@ class RoomController extends Controller
     public function index()
     {
         //
+        $rooms = Room::all();
+        $roomsResponse = [];
+
+        foreach ($rooms as $room) {
+            $type = RoomType::query()->select('type')
+                ->where('id',$room->room_type_id)->first();
+
+            $r = new Room;
+            $r->id = $room->id;
+            $r->state = $room->state;
+            $r->type = $type->type;
+
+            $roomsResponse[] = $r;
+        }
+
+        return $roomsResponse;
     }
 
     /**
@@ -20,6 +38,11 @@ class RoomController extends Controller
     public function store(Request $request)
     {
         //
+        $room = new Room;
+        $room->room_type_id = $request->room_type_id;
+        $room->state = 'disponible';
+
+        $room->save();
     }
 
     /**

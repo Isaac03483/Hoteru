@@ -28,7 +28,7 @@ class EmployeeController extends Controller
             $e->password = $employee->password;
             $e->type = $type->type;
 
-            array_push($employees_response, $e);
+            $employees_response[] = $e;
         }
 
         return $employees_response;

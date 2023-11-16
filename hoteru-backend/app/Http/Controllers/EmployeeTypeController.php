@@ -53,5 +53,6 @@ class EmployeeTypeController extends Controller
     public function destroy(int $id)
     {
         //
+        EmployeeType::destroy($id);
     }
 }

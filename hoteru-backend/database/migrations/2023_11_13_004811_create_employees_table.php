@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use \App\Models\EmployeeType;
+use App\Models\EmployeeType;
 
 return new class extends Migration
 {
@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->string('name');
-            $table->foreignIdFor(EmployeeType::class);
+            $table->foreignIdFor(EmployeeType::class)->constrained();
         });
     }
 

@@ -39,6 +39,7 @@ class AuthController extends Controller
 
         $response = new Employee;
 
+        $response->id = $employee->id;
         $response->username = $employee->username;
         $response->name = $employee->name;
         $response->type = $employeeType->type;
