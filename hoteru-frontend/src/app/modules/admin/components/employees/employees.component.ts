@@ -1,10 +1,12 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {EmployeeService} from "../../../../services/employee/employee.service";
 import {EmployeeTypeService} from "../../../../services/employee/employee-type.service";
 import {Employee} from "../../../../core/models/Employee";
 import {MatTableDataSource} from "@angular/material/table";
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {ModelType} from "../../../../core/models/ModelType";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-employees',
@@ -13,8 +15,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 })
 export class EmployeesComponent implements OnInit {
 
-  types: any[] = [];
-  employees: Employee[] = [];
+  types: ModelType[] = [];
   hide: boolean = true;
   columns: string[] = ['id', 'username','name', 'type', 'options'];
   datasource: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -22,8 +23,11 @@ export class EmployeesComponent implements OnInit {
   employeeTypeControl: FormControl = new FormControl<any>('', Validators.required);
   @ViewChild(FormGroupDirective) formDir!: FormGroupDirective;
 
+  typeColumns: string[] = ['id', 'type', 'options'];
+  typeDatasource: MatTableDataSource<any> = new MatTableDataSource<any>();
+
   constructor(private employeeService: EmployeeService, private employeeTypeService: EmployeeTypeService,
-              private builder: FormBuilder, private snackBar: MatSnackBar) {
+              private builder: FormBuilder, private snackBar: MatSnackBar, private matDialog: MatDialog) {
     this.employeeForm = this.builder.group({
       username: ['', Validators.required],
       name: ['', Validators.required],
@@ -40,9 +44,9 @@ export class EmployeesComponent implements OnInit {
   getTypes() {
     this.employeeTypeService.findAll()
       .subscribe({
-        next: response => {
+        next: (response: ModelType[]) => {
           this.types = response;
-          console.log(response);
+          this.typeDatasource.data = response;
         }
       })
   }
@@ -50,7 +54,7 @@ export class EmployeesComponent implements OnInit {
   getEmployees() {
     this.employeeService.findAll()
       .subscribe({
-        next: response => {
+        next: (response: Employee[]) => {
           this.datasource.data = response;
         }
       })
@@ -67,7 +71,7 @@ export class EmployeesComponent implements OnInit {
     this.employeeService.save(username, name, password, type)
       .subscribe({
         next: response => {
-          this.snackBar.open("Usuario guardado con éxito!", "Acceptar");
+          this.snackBar.open("Usuario guardado con éxito!", "Aceptar");
           this.getEmployees();
           this.formDir.resetForm(this.employeeForm);
         }
@@ -85,10 +89,36 @@ export class EmployeesComponent implements OnInit {
     this.employeeTypeService.save(type)
       .subscribe({
         next: response => {
-          this.snackBar.open("Tipo de empleado agregado con éxito!.", "Acceptar");
+          this.snackBar.open("Tipo de empleado agregado con éxito!.", "Aceptar");
           this.getTypes();
           this.employeeTypeControl.reset();
         }
       })
+  }
+
+  showUserTypeTable(templateRef: TemplateRef<any>) {
+    this.matDialog.open(templateRef);
+  }
+
+  deleteType(element: ModelType, templateRef: TemplateRef<any>) {
+    const confirmRef = this.matDialog.open(templateRef, {data: element});
+
+    confirmRef.afterClosed().subscribe({
+      next: (response: boolean) => {
+        console.log(response);
+        if(response) {
+          this.employeeTypeService.delete(element.id)
+            .subscribe({
+              next: response => {
+                this.snackBar.open('Tipo eliminado con éxito!', 'Aceptar');
+                this.getTypes();
+              },
+              error: err => {
+                this.snackBar.open('No se pudo eliminar el tipo de empleado. Está siendo usado por un usuario.', 'Cerrar');
+              }
+            })
+        }
+      }
+    })
   }
 }

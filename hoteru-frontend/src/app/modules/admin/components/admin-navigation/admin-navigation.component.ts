@@ -3,6 +3,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { AsyncPipe, NgIf } from '@angular/common';
+import {CookieService} from "ngx-cookie-service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-admin-navigation',
@@ -17,4 +19,12 @@ export class AdminNavigationComponent {
       map(result => result.matches),
       shareReplay()
     );
+
+  constructor(private cookieService: CookieService, private router: Router) {
+  }
+
+  logout() {
+    this.cookieService.delete('id');
+    this.router.navigate(['/','auth'])
+  }
 }

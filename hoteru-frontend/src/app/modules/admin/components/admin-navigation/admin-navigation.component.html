@@ -5,10 +5,22 @@
       [opened]="(isHandset$ | async) === false">
     <mat-toolbar>Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item routerLink="/admin">Dashboard</a>
-      <a mat-list-item routerLink="/admin/employees">Empleados</a>
-      <a mat-list-item routerLink="/admin/rooms">Habitaciones</a>
-      <a mat-list-item routerLink="/admin/tasks">Tareas</a>
+      <a mat-list-item routerLink="/admin">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <label matListItemTitle>Dashboard</label>
+      </a>
+      <a mat-list-item routerLink="/admin/employees">
+        <mat-icon matListItemIcon>supervisor_account</mat-icon>
+        <label matListItemTitle>Empleados</label>
+      </a>
+      <a mat-list-item routerLink="/admin/rooms">
+        <mat-icon matListItemIcon>airline_seat_individual_suite</mat-icon>
+        <label matListItemTitle>Habitaciones</label>
+      </a>
+      <a mat-list-item routerLink="/admin/tasks">
+        <mat-icon matListItemIcon>event</mat-icon>
+        <label matListItemTitle>Tareas</label>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -22,6 +34,11 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>Hoteru</span>
+      <span class="spacer"></span>
+      <button mat-button (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesión
+      </button>
     </mat-toolbar>
     <!-- Add Content Here -->
     <router-outlet></router-outlet>

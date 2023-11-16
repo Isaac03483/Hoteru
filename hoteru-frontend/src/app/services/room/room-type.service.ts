@@ -5,22 +5,22 @@ import {Observable} from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
-export class EmployeeTypeService {
+export class RoomTypeService {
 
   private readonly URL: string = 'http://localhost:8000/api';
 
   constructor(private httpClient: HttpClient) { }
 
   findAll() : Observable<any> {
-    return this.httpClient.get(`${this.URL}/employee-types`);
+    return this.httpClient.get(`${this.URL}/room-types`)
   }
 
   save(type: string) : Observable<any> {
     const body = { type };
-    return this.httpClient.post(`${this.URL}/employee-types`, body );
+    return this.httpClient.post(`${this.URL}/room-types`, body);
   }
 
   delete(id: number) : Observable<any> {
-    return this.httpClient.delete(`${this.URL}/employee-types/${id}`);
+    return this.httpClient.delete(`${this.URL}/room-types/${id}`)
   }
 }
