@@ -13,7 +13,20 @@ class RoomTypeController extends Controller
     public function index()
     {
         //
-        return RoomType::all();
+        $roomTypes = RoomType::all();
+        $typesResponse = [];
+
+        foreach ($roomTypes as $roomType) {
+            $r = new RoomType;
+            $r->id = $roomType->id;
+            $r->type = $roomType->type;
+            $r->cost = $roomType->cost_per_day;
+
+            $typesResponse[] = $r;
+        }
+
+        return $typesResponse;
+
     }
 
     /**
@@ -24,6 +37,7 @@ class RoomTypeController extends Controller
         //
         $roomType = new RoomType;
         $roomType->type  = $request->type;
+        $roomType->cost_per_day = $request->cost_per_day;
 
         $roomType->save();
     }

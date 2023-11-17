@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('employees', [EmployeeController::class, 'index']);
 Route::post('employees', [EmployeeController::class, 'store']);
+Route::get('employees/{id}', [EmployeeController::class, 'show']);
 
 Route::get('employee-types', [EmployeeTypeController::class, 'index']);
 Route::get('employee-types/{id}', [EmployeeTypeController::class, 'show']);
@@ -45,3 +46,6 @@ Route::post('rooms', [RoomController::class, 'store']);
 
 Route::get('tasks',  [TaskController::class, 'index']);
 Route::post('tasks', [TaskController::class, 'store']);
+Route::put('tasks/employees', [TaskController::class, 'updateTaskState']);
+Route::get('tasks/undone/{type}', [TaskController::class, 'findEmployeeTypeTasks']);
+Route::get('tasks/my-tasks/{id}', [TaskController::class, 'findEmployeeTasks']);

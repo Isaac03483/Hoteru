@@ -46,6 +46,76 @@ class TaskController extends Controller
         return $task_response;
     }
 
+    public function findEmployeeTypeTasks(int $type)
+    {
+
+        $tasks = Task::query()->select()->where('employee_type_id', $type)
+            ->where('date', date('Y-m-d'))
+            ->where('state', 'pendiente')->get();
+        $task_response = [];
+
+        foreach ($tasks as $task) {
+            $type = EmployeeType::query()->select('type')
+                ->where('id', $task->employee_type_id)->first();
+
+
+
+            $t = new Task;
+            $t->id = $task->id;
+            $t->name = $task->name;
+            $t->description = $task->description;
+            $t->date = $task->date;
+            $t->type = $type->type;
+            $t->state = $task->state;
+
+            if($task->employee_id !== 0) {
+                $employee = Employee::query()->select('name')
+                    ->where('id', $task->employee_id)->first();
+                $t->employee = $employee->name;
+            } else {
+                $t->employee = 'sin nombre';
+            }
+
+            $task_response[] = $t;
+        }
+
+        return $task_response;
+    }
+
+    public function findEmployeeTasks(int $id)
+    {
+        $tasks = Task::query()->select()->where('employee_id', $id)
+            ->where('date', date('Y-m-d'))->get();
+        $task_response = [];
+
+        foreach ($tasks as $task) {
+            $type = EmployeeType::query()->select('type')
+                ->where('id', $task->employee_type_id)->first();
+
+
+
+            $t = new Task;
+            $t->id = $task->id;
+            $t->name = $task->name;
+            $t->description = $task->description;
+            $t->date = $task->date;
+            $t->type = $type->type;
+            $t->state = $task->state;
+
+            if($task->employee_id !== 0) {
+                $employee = Employee::query()->select('name')
+                    ->where('id', $task->employee_id)->first();
+                $t->employee = $employee->name;
+            } else {
+                $t->employee = 'sin nombre';
+            }
+
+            $task_response[] = $t;
+        }
+
+        return $task_response;
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -73,9 +143,22 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
         //
+
+
+    }
+
+    public function updateTaskState(Request $request)
+    {
+        $task = new Task;
+        $task->id = $request->id;
+        $task->employee = $request->employee;
+        $task->state = $request->state;
+
+        return Task::query()->where('id',$task->id)
+            ->update(['employee_id' => $task->employee, 'state' => $task->state]);
     }
 
     /**

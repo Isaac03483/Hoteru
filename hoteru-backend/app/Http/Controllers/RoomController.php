@@ -18,13 +18,14 @@ class RoomController extends Controller
         $roomsResponse = [];
 
         foreach ($rooms as $room) {
-            $type = RoomType::query()->select('type')
+            $type = RoomType::query()->select()
                 ->where('id',$room->room_type_id)->first();
 
             $r = new Room;
             $r->id = $room->id;
             $r->state = $room->state;
             $r->type = $type->type;
+            $r->cost = $type->cost_per_day;
 
             $roomsResponse[] = $r;
         }

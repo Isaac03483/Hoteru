@@ -60,9 +60,18 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($username, $password)
+    public function show(int $id)
     {
         //
+        $employee = Employee::query()->select()->where('id', $id)->first();
+
+        $response = new Employee;
+        $response->id = $employee->id;
+        $response->username = $employee->username;
+        $response->name = $employee->name;
+        $response->type = $employee->employee_type_id;
+
+        return $response;
 
     }
 
