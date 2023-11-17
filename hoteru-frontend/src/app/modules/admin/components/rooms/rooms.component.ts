@@ -1,6 +1,6 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
-import {FormControl, Validators} from "@angular/forms";
-import {ModelType} from "../../../../core/models/ModelType";
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
+import {RoomType} from "../../../../core/models/ModelType";
 import {RoomService} from "../../../../services/room/room.service";
 import {RoomTypeService} from "../../../../services/room/room-type.service";
 import {Room} from "../../../../core/models/Room";
@@ -14,18 +14,25 @@ import {MatDialog} from "@angular/material/dialog";
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
+
   roomControl : FormControl = new FormControl(null, Validators.required);
 
-  roomTypeControl : FormControl = new FormControl(null, Validators.required);
-  roomTypes: ModelType[] = [];
-  columns: string[] = ['id', 'type', 'state', 'options'];
+  roomTypeForm: FormGroup;
+  roomTypes: RoomType[] = [];
+  columns: string[] = ['id', 'type', 'costPerDay', 'state', 'options'];
   datasource: MatTableDataSource<any> = new MatTableDataSource();
 
-  typeColumns: string[] = ['id', 'type', 'options'];
+  typeColumns: string[] = ['id', 'type', 'costPerDay', 'options'];
   typeDatasource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
+  @ViewChild(FormGroupDirective) formDir!: FormGroupDirective;
+
   constructor(private roomService: RoomService, private roomTypeService: RoomTypeService,
-              private snackBar: MatSnackBar, private matDialog: MatDialog) {
+              private snackBar: MatSnackBar, private matDialog: MatDialog, private builder: FormBuilder) {
+    this.roomTypeForm = this.builder.group({
+      type: ['', Validators.required],
+      costPerDay: [null, Validators.required]
+    })
   }
 
   ngOnInit(): void {
@@ -37,7 +44,9 @@ export class RoomsComponent implements OnInit {
   getTypes() {
     this.roomTypeService.findAll()
       .subscribe({
-        next: (response: ModelType[]) => {
+        next: (response: RoomType[]) => {
+
+          console.log('response', response);
           this.roomTypes = response;
           this.typeDatasource.data = response;
         }
@@ -48,6 +57,7 @@ export class RoomsComponent implements OnInit {
     this.roomService.findAll()
       .subscribe({
         next: (response: Room[]) => {
+          console.log(response);
           this.datasource.data = response;
         }
       })
@@ -56,19 +66,19 @@ export class RoomsComponent implements OnInit {
 
   saveType() {
 
-    if(this.roomTypeControl.invalid) {
-      this.snackBar.open('El campo está vacío.', 'Cerrar');
+    if(this.roomTypeForm.invalid) {
+      this.snackBar.open('Los campos están vacíos..', 'Cerrar');
       return;
     }
 
-    const type = this.roomTypeControl.value;
+    const { type, costPerDay } = this.roomTypeForm.value;
 
-    this.roomTypeService.save(type)
+    this.roomTypeService.save(type, costPerDay)
       .subscribe({
         next: response => {
           this.snackBar.open('Tipo de habitación agregado con éxito!', 'Aceptar');
           this.getTypes();
-          this.roomTypeControl.reset();
+          this.formDir.resetForm(this.roomTypeForm);
         },
         error: err => {
           console.log(err)
@@ -105,7 +115,7 @@ export class RoomsComponent implements OnInit {
     this.matDialog.open(templateRef);
   }
 
-  deleteType(element: ModelType, templateRef: TemplateRef<any>) {
+  deleteType(element: RoomType, templateRef: TemplateRef<any>) {
     const confirmRef = this.matDialog.open(templateRef, {data: element});
 
     confirmRef.afterClosed().subscribe({

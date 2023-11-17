@@ -15,6 +15,10 @@ const routes: Routes = [
     loadChildren: () => import('./modules/employee/employee.module').then(m => m.EmployeeModule)
   },
   {
+    path: 'receptionist',
+    loadChildren: () => import('./modules/recep/recep.module').then(m => m.RecepModule)
+  },
+  {
     path: '**',
     redirectTo: 'auth'
   }

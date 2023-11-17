@@ -15,8 +15,8 @@ export class RoomTypeService {
     return this.httpClient.get(`${this.URL}/room-types`)
   }
 
-  save(type: string) : Observable<any> {
-    const body = { type };
+  save(type: string, costPerDay: number) : Observable<any> {
+    const body = { type, 'cost_per_day':costPerDay };
     return this.httpClient.post(`${this.URL}/room-types`, body);
   }
 

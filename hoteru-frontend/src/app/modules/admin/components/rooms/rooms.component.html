@@ -1,7 +1,7 @@
 <div class="grid-container">
   <h1 class="mat-h1">Habitaciones</h1>
   <mat-grid-list cols="3" rowHeight="250px">
-    <mat-grid-tile colspan="2" rowspan="2">
+    <mat-grid-tile colspan="2" rowspan="3">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>Habitaciones</mat-card-title>
@@ -22,7 +22,7 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="1" rowspan="1">
+    <mat-grid-tile colspan="1" rowspan="2">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>Agregar nuevo tipo de habitación</mat-card-title>
@@ -47,6 +47,11 @@
      <ng-container matColumnDef="type">
        <th mat-header-cell *matHeaderCellDef>Tipo de habitación</th>
        <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+     </ng-container>
+
+     <ng-container matColumnDef="costPerDay">
+       <th mat-header-cell *matHeaderCellDef>Costo por día</th>
+       <td mat-cell *matCellDef="let element">{{ element.cost }}</td>
      </ng-container>
 
      <ng-container matColumnDef="state">
@@ -85,14 +90,21 @@
 </ng-template>
 
 <ng-template #saveRoomTypeTemplate>
-  <div class="center">
+  <form class="center" [formGroup]="roomTypeForm">
     <mat-form-field class="form-input" appearance="outline">
       <mat-label>Tipo de Habitación</mat-label>
-      <input [formControl]="roomTypeControl" matInput type="text" placeholder="Ingrese el tipo de habitación">
-      <mat-error *ngIf="roomTypeControl.hasError">El campo es obligatorio</mat-error>
+      <input formControlName="type" matInput type="text" placeholder="Ingrese el tipo de habitación">
+      <mat-error *ngIf="roomTypeForm.get('type')?.hasError">El tipo de habitación es obligatorio</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-input" floatLabel="always" appearance="outline">
+      <mat-label>Costo por día</mat-label>
+      <input formControlName="costPerDay" matInput type="number" class="example-right-align" placeholder="0">
+      <span matTextPrefix>Q&nbsp;</span>
+      <span matTextSuffix>.00</span>
+      <mat-error *ngIf="roomTypeForm.get('costPerDay')?.hasError">El costo por día es obligatorio</mat-error>
     </mat-form-field>
     <div>
-      <button [disabled]="roomTypeControl.invalid && roomTypeControl.touched" mat-flat-button color="primary"
+      <button [disabled]="this.roomTypeForm.invalid && roomTypeForm.touched" mat-flat-button color="primary"
               (click)="saveType()">
         Agregar
       </button>
@@ -101,7 +113,7 @@
         Ver tipos
       </button>
     </div>
-  </div>
+  </form>
 </ng-template>
 
 <ng-template #roomTypeTableTemplate>
@@ -118,6 +130,11 @@
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef>Nombre</th>
           <td mat-cell *matCellDef="let element">{{element.type}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="costPerDay">
+          <th mat-header-cell *matHeaderCellDef>Costo por día</th>
+          <td mat-cell *matCellDef="let element">{{element.cost}}</td>
         </ng-container>
 
         <ng-container matColumnDef="options">

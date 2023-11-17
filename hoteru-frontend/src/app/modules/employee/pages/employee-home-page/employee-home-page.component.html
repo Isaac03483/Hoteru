@@ -8,26 +8,151 @@
 </mat-toolbar>
 
 <div class="grid-container">
-  <h1 class="mat-h1">Dashboard</h1>
+  <h1 class="mat-h1">Empleados</h1>
   <mat-grid-list cols="2" rowHeight="350px">
-<!--    <mat-grid-tile *ngFor="let card of cards | async" [colspan]="card.cols" [rowspan]="card.rows">-->
-<!--      <mat-card class="dashboard-card">-->
-<!--        <mat-card-header>-->
-<!--          <mat-card-title>-->
-<!--            {{card.title}}-->
-<!--            <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">-->
-<!--              <mat-icon>more_vert</mat-icon>-->
-<!--            </button>-->
-<!--            <mat-menu #menu="matMenu" xPosition="before">-->
-<!--              <button mat-menu-item>Expand</button>-->
-<!--              <button mat-menu-item>Remove</button>-->
-<!--            </mat-menu>-->
-<!--          </mat-card-title>-->
-<!--        </mat-card-header>-->
-<!--        <mat-card-content class="dashboard-card-content">-->
-<!--          <div>Card Content Here</div>-->
-<!--        </mat-card-content>-->
-<!--      </mat-card>-->
-<!--    </mat-grid-tile>-->
+
+    <mat-grid-tile colspan="1" rowspan="2">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Tareas pendientes</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="undoneTasksTableTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile colspan="1" rowspan="2">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Tareas asignadas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="myTasksTableTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
   </mat-grid-list>
 </div>
+
+
+<!--TEMPLATES-->
+
+<ng-template #undoneTasksTableTemplate>
+  <table mat-table [dataSource]="undoneDatasource">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>No.</th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre de la tarea</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="employee">
+      <th mat-header-cell *matHeaderCellDef>Nombre del empleado</th>
+      <td mat-cell *matCellDef="let element">{{ element.employee }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Fecha</th>
+      <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="state">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let element">{{ element.state }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="Ver detalles">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button (click)="showAssignTemplate(assignTaskTemplate, element)" mat-icon-button color="primary" matTooltip="Asignar">
+          <mat-icon>assignment</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="tasksColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: tasksColumns;"></tr>
+
+  </table>
+</ng-template>
+
+<ng-template #myTasksTableTemplate>
+
+  <table mat-table [dataSource]="myTasksDatasource">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>No.</th>
+      <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre de la tarea</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="employee">
+      <th mat-header-cell *matHeaderCellDef>Nombre del empleado</th>
+      <td mat-cell *matCellDef="let element">{{ element.employee }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Fecha</th>
+      <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="state">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let element">{{ element.state }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button matTooltip="Ver detalles">
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Marcar como Hecha"
+                [disabled]="element.state === 'finalizada'" (click)="showMarkAsDoneTemplate(markAsDoneTemplate, element)">
+          <mat-icon>done</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="tasksColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: tasksColumns;"></tr>
+  </table>
+</ng-template>
+
+<ng-template #assignTaskTemplate let-data>
+  <div style="width: 300px">
+    <h1 mat-dialog-title>Asignar tarea</h1>
+    <mat-dialog-content>
+      <label>¿Desea asignarse la tarea {{data.name}}?</label>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" [mat-dialog-close]="true">Asignar</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="false">Cancelar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #markAsDoneTemplate let-data>
+  <div style="width: 300px">
+    <h1 mat-dialog-title>Asignar tarea</h1>
+    <mat-dialog-content>
+      <label>¿Marcar la tarea {{data.name}} como finalizada?</label>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" [mat-dialog-close]="true">Finalizar</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="false">Cancelar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>

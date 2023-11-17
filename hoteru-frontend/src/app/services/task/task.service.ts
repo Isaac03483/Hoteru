@@ -23,4 +23,18 @@ export class TaskService {
     };
     return this.httpClient.post(`${this.URL}/tasks`, body);
   }
+
+  findEmployeeTypeTasks(type: any) : Observable<any> {
+    return this.httpClient.get(`${this.URL}/tasks/undone/${type}`);
+  }
+
+  findEmployeeTasks(id: any) : Observable<any> {
+    return this.httpClient.get(`${this.URL}/tasks/my-tasks/${id}`);
+  }
+
+  updateTaskState(id: number, employee: number, state: string) : Observable<any> {
+    const body = { id, employee, state };
+
+    return this.httpClient.put(`${this.URL}/tasks/employees`, body);
+  }
 }

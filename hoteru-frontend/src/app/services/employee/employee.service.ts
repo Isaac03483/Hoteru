@@ -15,6 +15,10 @@ export class EmployeeService {
     return this.httpClient.get(`${this.URL}/employees`);
   }
 
+  getEmployee(id: any) : Observable<any> {
+    return this.httpClient.get(`${this.URL}/employees/${id}`);
+  }
+
   save(username: string, name: string, password: string, type: number) : Observable<any> {
     const body = {
       username,

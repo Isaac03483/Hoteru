@@ -38,7 +38,7 @@ export class AuthComponent {
           }
 
           if(response.type === 'recepcionista') {
-
+            this.router.navigate(['/','receptionist'])
             return;
           }
 
@@ -47,8 +47,7 @@ export class AuthComponent {
 
         error: err => {
           console.log(err)
-          this.snackBar.open("No se encontró al usuario", "cerrar",
-            {duration: 1500});
+          this.snackBar.open("No se encontró al usuario", "Cerrar");
         }
       });
   }
