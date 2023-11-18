@@ -8,6 +8,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,9 +45,15 @@ Route::delete('room-types/{id}', [RoomTypeController::class, 'destroy']);
 
 Route::get('rooms', [RoomController::class, 'index']);
 Route::post('rooms', [RoomController::class, 'store']);
+Route::get('rooms/available', [RoomController::class, 'findAvailableRooms']);
 
 Route::get('tasks',  [TaskController::class, 'index']);
 Route::post('tasks', [TaskController::class, 'store']);
 Route::put('tasks/employees', [TaskController::class, 'updateTaskState']);
 Route::get('tasks/undone/{type}', [TaskController::class, 'findEmployeeTypeTasks']);
 Route::get('tasks/my-tasks/{id}', [TaskController::class, 'findEmployeeTasks']);
+
+Route::get('clients/find/{nit}', [ClientController::class, 'show']);
+
+Route::post('reservations', [ReservationController::class, 'store']);
+Route::get('reservations/today', [ReservationController::class, 'todayReservations']);
