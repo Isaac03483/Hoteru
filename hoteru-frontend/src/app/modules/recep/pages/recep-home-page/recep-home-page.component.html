@@ -9,13 +9,183 @@
 
 <div class="grid-container">
   <h1 class="mat-h1">Recepcionista</h1>
-  <mat-grid-list cols="2" rowHeight="350px">
-    <mat-grid-tile colspan="2" rowspan="1">
+  <mat-grid-list cols="4" rowHeight="350px">
+    <mat-grid-tile colspan="2" rowspan="2">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>Agregar reservación</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="saveReservationTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile colspan="2" rowspan="1">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Tipos de habitación</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="roomTypeTableTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile colspan="2" rowspan="1">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Reservaciones para el día de hoy</mat-card-title>
         </mat-card-header>
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
 </div>
+
+<!--TEMPLATES-->
+
+<ng-template #saveReservationTemplate>
+  <form [formGroup]="reservationForm" (ngSubmit)="saveReservation()">
+    <mat-grid-list cols="2" rowHeight="200px">
+
+      <mat-grid-tile colspan="1" rowspan="1">
+        <div class="dashboard-card">
+          <h2 class="mat-h2">Buscar cliente</h2>
+          <mat-form-field class="form-input" appearance="outline">
+            <mat-label>Nit</mat-label>
+            <input formControlName="nit" matInput type="text" placeholder="Ingrese el nit del cliente">
+          </mat-form-field>
+          <button type="button" mat-flat-button color="primary" style="margin-left: 10px"
+                  (click)="findClient()">
+            Buscar
+          </button>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile colspan="1" rowspan="1">
+        <div class="dashboard-card">
+          <h2 class="mat-h2">Información del cliente</h2>
+          <mat-form-field class="form-input" appearance="outline">
+            <mat-label>Nombre del cliente</mat-label>
+            <input formControlName="name" matInput>
+          </mat-form-field>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile colspan="1" rowspan="2">
+        <div class="dashboard-card">
+          <h2 class="mat-h2">Información sobre la reservación</h2>
+          <mat-form-field class="form-input" appearance="outline">
+            <mat-label>Dias de reservación</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input formControlName="initDate" matStartDate placeholder="Start date">
+              <input formControlName="endDate" matEndDate placeholder="End date" (dateChange)="calcTotal()">
+            </mat-date-range-input>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+
+          <h2 class="mat-h2">Total: {{total}}</h2>
+
+          <div style="margin-top: 20px;">
+            <button [disabled]="reservationForm.invalid && reservationForm.touched"
+                    mat-flat-button color="primary">
+              Agregar
+            </button>
+            <button type="button" mat-flat-button color="accent" style="margin-left: 10px"
+                    (click)="selectRoom(selectRoomTemplate)">
+              Elegir habitación
+            </button>
+          </div>
+        </div>
+
+      </mat-grid-tile>
+      <mat-grid-tile colspan="1" rowspan="2">
+        <div class="dashboard-card">
+          <h2 class="mat-h2">Información de la habitación</h2>
+
+          <mat-form-field class="form-input" appearance="outline">
+            <mat-label>No. de habitación</mat-label>
+            <input formControlName="roomId" matInput type="text" readonly>
+          </mat-form-field>
+
+          <mat-form-field class="form-input" appearance="outline">
+            <mat-label>Tipo de habitación</mat-label>
+            <input formControlName="type" matInput type="text" readonly>
+          </mat-form-field>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </form>
+</ng-template>
+
+
+<ng-template #selectRoomTemplate>
+  <div class="dialog-container">
+    <h2 mat-dialog-title>Seleccione una habitación</h2>
+
+    <mat-dialog-content>
+      <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Tipo de habitación</th>
+          <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="costPerDay">
+          <th mat-header-cell *matHeaderCellDef>Costo por día</th>
+          <td mat-cell *matCellDef="let element">{{ element.cost }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="state">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let element">{{ element.state }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="options">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-flat-button color="accent" [mat-dialog-close]="element">
+              Seleccionar
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+
+      </table>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="warn" mat-dialog-close>Cancelar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #roomTypeTableTemplate>
+  <table mat-table [dataSource]="typeDataSource">
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>No.</th>
+      <td mat-cell *matCellDef="let element">{{element.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Nombre</th>
+      <td mat-cell *matCellDef="let element">{{element.type}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="costPerDay">
+      <th mat-header-cell *matHeaderCellDef>Costo por día</th>
+      <td mat-cell *matCellDef="let element">{{element.cost}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="typeColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: typeColumns;"></tr>
+  </table>
+
+</ng-template>

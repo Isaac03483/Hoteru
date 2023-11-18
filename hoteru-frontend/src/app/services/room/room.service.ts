@@ -21,4 +21,8 @@ export class RoomService {
     }
     return this.httpClient.post(`${this.URL}/rooms`, body);
   }
+
+  findAvailableRooms() : Observable<any> {
+    return this.httpClient.get(`${this.URL}/rooms/available`);
+  }
 }
