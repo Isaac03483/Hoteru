@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nit');
             $table->foreignIdFor(Room::class)->constrained();
+            $table->date('date');
             $table->date('init_date');
             $table->date('end_date');
             $table->decimal('total', $precision = 8, $scale = 2);

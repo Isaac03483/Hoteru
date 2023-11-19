@@ -53,3 +53,13 @@ CREATE TABLE IF NOT EXISTS tasks(
     employee_id INT,
     state VARCHAR(255)
 );
+
+-- report queries
+
+SELECT state, count(*) as numero FROM tasks GROUP BY state, date  HAVING date = '2023-11-18';
+
+SELECT date, SUM(total) FROM reservations WHERE date BETWEEN '2023-10-18' AND '2023-12-18' GROUP BY date;
+
+SELECT id, type, COUNT(*) FROM room_types WHERE id IN(
+    SELECT room_type_id FROM reservations JOIN rooms ON reservations.room_id = rooms.id
+) GROUP BY id;

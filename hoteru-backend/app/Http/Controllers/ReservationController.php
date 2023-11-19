@@ -17,7 +17,24 @@ class ReservationController extends Controller
     public function index()
     {
         //
-        return Reservation::all();
+        $reservations = Reservation::all();
+        $r_response = [];
+
+        foreach ($reservations as $reservation) {
+            $r = new Reservation;
+            $r->id = $reservation->id;
+            $r->nit = $reservation->nit;
+            $r->roomId = $reservation->room_id;
+            $r->date = $reservation->date;
+            $r->initDate = $reservation->init_date;
+            $r->endDate = $reservation->end_date;
+            $r->total = $reservation->total;
+
+            $r_response[] = $r;
+
+        }
+
+        return $r_response;
     }
 
     /**
@@ -31,6 +48,7 @@ class ReservationController extends Controller
         $reservation->room_id = $request->room_id;
         $reservation->init_date = $request->init_date;
         $reservation->end_date = $request->end_date;
+        $reservation->date = date('Y-m-d');
 
         $client = Client::updateOrCreate(['nit' => $reservation->nit], ['name' => $request->name]);
 
@@ -43,7 +61,8 @@ class ReservationController extends Controller
 
         $findReservations = Reservation::query()->where('room_id', $reservation->room_id)
             ->whereBetween('init_date', [$init_date, $end_date])
-            ->orWhereBetween('end_date', [$init_date, $end_date])->first();
+            ->orWhere('room_id', $reservation->room_id)
+            ->WhereBetween('end_date', [$init_date, $end_date])->first();
 
         if($findReservations !== null) {
             abort(400, 'La habitación se ha reservado en esas fechas.');
@@ -83,6 +102,24 @@ class ReservationController extends Controller
     public function todayReservations()
     {
         $currentDate = date('Y-m-d');
-        return Reservation::query()->where('init_date', $currentDate)->get();
+        $reservations = Reservation::query()->where('init_date', $currentDate)->get();
+
+        $r_response = [];
+
+        foreach ($reservations as $reservation) {
+            $r = new Reservation;
+            $r->id = $reservation->id;
+            $r->nit = $reservation->nit;
+            $r->roomId = $reservation->room_id;
+            $r->date = $reservation->date;
+            $r->initDate = $reservation->init_date;
+            $r->endDate = $reservation->end_date;
+            $r->total = $reservation->total;
+
+            $r_response[] = $r;
+
+        }
+
+        return $r_response;
     }
 }

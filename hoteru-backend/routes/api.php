@@ -10,6 +10,7 @@ use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,5 +56,10 @@ Route::get('tasks/my-tasks/{id}', [TaskController::class, 'findEmployeeTasks']);
 
 Route::get('clients/find/{nit}', [ClientController::class, 'show']);
 
+Route::get('reservations', [ReservationController::class, 'index']);
 Route::post('reservations', [ReservationController::class, 'store']);
 Route::get('reservations/today', [ReservationController::class, 'todayReservations']);
+
+Route::get('reports/today-tasks/{currentDate}', [ReportController::class, 'countTodayTasks']);
+Route::get('reports/earnings/{init}/{end}', [ReportController::class, 'earnings']);
+Route::get('reports/best-room-types', [ReportController::class, 'bestRoomTypes']);
