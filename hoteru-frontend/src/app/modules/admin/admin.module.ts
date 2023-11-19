@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, CurrencyPipe} from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
 import { AdminNavigationComponent } from './components/admin-navigation/admin-navigation.component';
@@ -23,6 +23,12 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatDialogModule} from "@angular/material/dialog";
+import { ReservationsComponent } from './components/reservations/reservations.component';
+import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
 
 
 @NgModule({
@@ -32,7 +38,8 @@ import {MatDialogModule} from "@angular/material/dialog";
     EmployeesComponent,
     AdminDashboardComponent,
     RoomsComponent,
-    TasksComponent
+    TasksComponent,
+    ReservationsComponent
   ],
   imports: [
     CommonModule,
@@ -52,7 +59,12 @@ import {MatDialogModule} from "@angular/material/dialog";
     MatTooltipModule,
     MatSnackBarModule,
     MatDialogModule,
-    FormsModule
+    FormsModule,
+    MatSortModule,
+    MatPaginatorModule,
+    NgxChartsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ]
 })
 export class AdminModule { }

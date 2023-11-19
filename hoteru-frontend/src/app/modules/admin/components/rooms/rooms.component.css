@@ -23,3 +23,8 @@ input.example-right-align::-webkit-inner-spin-button {
 input.example-right-align {
   -moz-appearance: textfield;
 }
+
+.mat-mdc-form-field-impl {
+  font-size: 14px;
+  width: 100%;
+}

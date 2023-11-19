@@ -19,3 +19,8 @@
 textarea {
   resize: none;
 }
+
+.mat-mdc-form-field-impl {
+  font-size: 14px;
+  width: 100%;
+}

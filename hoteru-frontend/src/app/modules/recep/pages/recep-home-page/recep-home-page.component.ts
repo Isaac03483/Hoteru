@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
@@ -11,23 +11,34 @@ import {ReservationService} from "../../../../services/reservation/reservation.s
 import {ClientService} from "../../../../services/client/client.service";
 import {RoomTypeService} from "../../../../services/room/room-type.service";
 import {RoomType} from "../../../../core/models/ModelType";
+import {Reservation} from "../../../../core/models/Reservation";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-recep-home-page',
   templateUrl: './recep-home-page.component.html',
   styleUrls: ['./recep-home-page.component.css']
 })
-export class RecepHomePageComponent implements OnInit {
+export class RecepHomePageComponent implements OnInit, AfterViewInit {
   total: number = 0;
-
   costPerDay: number = 0;
+
   reservationForm: FormGroup;
   columns: string[] = ['id', 'type', 'costPerDay', 'state', 'options'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   typeColumns: string[] = ['id', 'type', 'costPerDay'];
-
   typeDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+
   @ViewChild(FormGroupDirective) formDir!: FormGroupDirective;
+  todayColumns: string[] = ['id', 'nit', 'roomId', 'date', 'endDate', 'total'];
+
+  todayDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+  @ViewChild('paginatorType') paginatorType!: MatPaginator;
+  @ViewChild('paginatorToday') paginatorToday!: MatPaginator;
+  @ViewChild('sortType') sortType!: MatSort;
+  @ViewChild('sortToday') sortToday!: MatSort;
+
   constructor(private cookieService: CookieService, private router: Router, private builder: FormBuilder,
               private matDialog: MatDialog, private snackBar: MatSnackBar, private roomService: RoomService,
               private reservationService: ReservationService, private clientService: ClientService,
@@ -44,6 +55,14 @@ export class RecepHomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTypes();
+    this.getTodayReservations();
+  }
+
+  ngAfterViewInit(): void {
+    this.typeDataSource.paginator = this.paginatorType;
+    this.typeDataSource.sort = this.sortType;
+    this.todayDataSource.paginator = this.paginatorToday;
+    this.todayDataSource.sort = this.sortToday;
   }
 
   logout() {
@@ -59,14 +78,24 @@ export class RecepHomePageComponent implements OnInit {
     this.reservationService.save(nit, name, roomId, initDate, endDate)
       .subscribe({
         next: response => {
-          this.snackBar.open('Reservación agregada con éxito.', 'Acceptar');
+          this.snackBar.open('Reservación agregada con éxito.', 'Aceptar');
           this.formDir.resetForm(this.reservationForm);
           this.total = 0;
           this.costPerDay = 0;
+          this.getTodayReservations();
         },
         error: err => {
           this.snackBar.open(`No se pudo agregar la reservación. ${err.error.message}`, 'Cerrar');
           console.log(err)
+        }
+      })
+  }
+
+  getTodayReservations() {
+    this.reservationService.todayReservation()
+      .subscribe({
+        next: (response: Reservation[]) => {
+          this.todayDataSource.data = response;
         }
       })
   }
@@ -134,5 +163,23 @@ export class RecepHomePageComponent implements OnInit {
           this.snackBar.open('No se encontró al cliente.', 'Cerrar');
         }
       })
+  }
+
+  applyTypeFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.typeDataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.typeDataSource.paginator) {
+      this.typeDataSource.paginator.firstPage();
+    }
+  }
+
+  applyTodayFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.todayDataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.todayDataSource.paginator) {
+      this.todayDataSource.paginator.firstPage();
+    }
   }
 }

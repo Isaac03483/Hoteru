@@ -19,3 +19,8 @@
 .dashboard-card-content {
   text-align: center;
 }
+
+.mat-mdc-form-field-impl {
+  font-size: 14px;
+  width: 100%;
+}

@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators} from "@angular/forms";
 import {RoomType} from "../../../../core/models/ModelType";
 import {RoomService} from "../../../../services/room/room.service";
@@ -7,13 +7,15 @@ import {Room} from "../../../../core/models/Room";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-rooms',
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.css']
 })
-export class RoomsComponent implements OnInit {
+export class RoomsComponent implements OnInit, AfterViewInit {
 
   roomControl : FormControl = new FormControl(null, Validators.required);
 
@@ -26,6 +28,9 @@ export class RoomsComponent implements OnInit {
   typeDatasource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
   @ViewChild(FormGroupDirective) formDir!: FormGroupDirective;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private roomService: RoomService, private roomTypeService: RoomTypeService,
               private snackBar: MatSnackBar, private matDialog: MatDialog, private builder: FormBuilder) {
@@ -33,6 +38,11 @@ export class RoomsComponent implements OnInit {
       type: ['', Validators.required],
       costPerDay: [null, Validators.required]
     })
+  }
+
+  ngAfterViewInit(): void {
+    this.datasource.paginator = this.paginator;
+    this.datasource.sort = this.sort;
   }
 
   ngOnInit(): void {
@@ -137,4 +147,12 @@ export class RoomsComponent implements OnInit {
   }
 
 
+  applyFilter(event: KeyboardEvent) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.datasource.filter = filterValue.trim().toLowerCase();
+
+    if (this.datasource.paginator) {
+      this.datasource.paginator.firstPage();
+    }
+  }
 }

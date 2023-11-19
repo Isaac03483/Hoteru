@@ -11,6 +11,10 @@ export class ReservationService {
 
   constructor(private httpClient: HttpClient) { }
 
+  findAll() : Observable<any> {
+    return this.httpClient.get(`${this.URL}/reservations`);
+  }
+
   save(nit: string, name: string, roomId: number, initDate: string, endDate: string) : Observable<any> {
     const body = {
       nit,
@@ -20,5 +24,9 @@ export class ReservationService {
       'end_date': endDate
     }
     return this.httpClient.post(`${this.URL}/reservations`, body);
+  }
+
+  todayReservation() : Observable<any> {
+    return this.httpClient.get(`${this.URL}/reservations/today`);
   }
 }

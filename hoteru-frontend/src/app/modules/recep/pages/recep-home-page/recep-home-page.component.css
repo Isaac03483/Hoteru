@@ -24,3 +24,8 @@
   margin: 20px;
   width: 525px;
 }
+
+.mat-mdc-form-field-impl {
+  font-size: 14px;
+  width: 100%;
+}

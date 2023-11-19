@@ -5,6 +5,7 @@ import {EmployeesComponent} from "./components/employees/employees.component";
 import {AdminDashboardComponent} from "./components/admin-dashboard/admin-dashboard.component";
 import {RoomsComponent} from "./components/rooms/rooms.component";
 import {TasksComponent} from "./components/tasks/tasks.component";
+import {ReservationsComponent} from "./components/reservations/reservations.component";
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
       {
         path: 'tasks',
         component: TasksComponent
+      },
+      {
+        path: 'reservations',
+        component: ReservationsComponent
       }
     ]
   }

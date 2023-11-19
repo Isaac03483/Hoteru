@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, TemplateRef} from '@angular/core';
+import {AfterViewInit, Component, inject, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
 import {Task} from "../../../../core/models/Task";
@@ -7,24 +7,30 @@ import {EmployeeService} from "../../../../services/employee/employee.service";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-employee-home-page',
   templateUrl: './employee-home-page.component.html',
   styleUrls: ['./employee-home-page.component.css']
 })
-export class EmployeeHomePageComponent implements OnInit {
-
+export class EmployeeHomePageComponent implements OnInit, AfterViewInit {
   tasksColumns: string[] = ['id', 'name','employee', 'date', 'state', 'options']
+
   undoneTasks: Task[] = [];
   undoneDatasource: MatTableDataSource<any> = new MatTableDataSource<any>();
-
   myTasks: Task[] = [];
+
   myTasksDatasource: MatTableDataSource<any> = new MatTableDataSource<any>();
-
   id: any;
-  type: any;
 
+  @ViewChild('undonePaginator') undonePaginator!: MatPaginator;
+  @ViewChild('myTasksPaginator') myTasksPaginator!: MatPaginator;
+  @ViewChild('undoneSort') undoneSort!: MatSort;
+  @ViewChild('myTasksSort') myTasksSort!: MatSort;
+
+  type: any;
   constructor(private cookieService: CookieService, private router: Router, private taskService: TaskService,
               private employeeService: EmployeeService, private matDialog: MatDialog, private snackBar: MatSnackBar) {
   }
@@ -47,6 +53,13 @@ export class EmployeeHomePageComponent implements OnInit {
       })
 
     this.getEmployeeTasks();
+  }
+
+  ngAfterViewInit(): void {
+    this.undoneDatasource.paginator = this.undonePaginator;
+    this.undoneDatasource.sort = this.undoneSort;
+    this.myTasksDatasource.paginator = this.myTasksPaginator;
+    this.myTasksDatasource.sort = this.myTasksSort;
   }
 
   getUndoneTasks() {
@@ -108,5 +121,23 @@ export class EmployeeHomePageComponent implements OnInit {
         }
       }
     })
+  }
+
+  applyUndoneFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.undoneDatasource.filter = filterValue.trim().toLowerCase();
+
+    if (this.undoneDatasource.paginator) {
+      this.undoneDatasource.paginator.firstPage();
+    }
+  }
+
+  applyMyTasksFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.myTasksDatasource.filter = filterValue.trim().toLowerCase();
+
+    if (this.myTasksDatasource.paginator) {
+      this.myTasksDatasource.paginator.firstPage();
+    }
   }
 }

@@ -70,10 +70,16 @@
 </ng-template>
 
 <ng-template #userTableTemplate>
-  <table mat-table [dataSource]="datasource">
+
+  <mat-form-field class="mat-mdc-form-field-impl" appearance="outline">
+    <mat-label>Filtrar</mat-label>
+    <input matInput (keyup)="applyDatasourceFilter($event)" #input>
+  </mat-form-field>
+
+  <table mat-table [dataSource]="datasource" #sort2='matSort' matSort>
 
     <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef>No.</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
       <td mat-cell *matCellDef="let element">{{element.id}}</td>
     </ng-container>
 
@@ -107,6 +113,9 @@
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
     <tr mat-row *matRowDef="let row; columns: columns;"></tr>
   </table>
+
+  <mat-paginator [pageSizeOptions]="[5]" #paginator2 aria-label="Select page of reservations"></mat-paginator>
+
 </ng-template>
 
 <ng-template #saveUserTypeTemplate>
@@ -133,10 +142,16 @@
   <div style="width: 500px">
     <h1 mat-dialog-title>Tipos de usuario</h1>
     <mat-dialog-content>
-      <table mat-table [dataSource]="typeDatasource">
+
+      <mat-form-field class="mat-mdc-form-field-impl" appearance="outline">
+        <mat-label>Filtrar</mat-label>
+        <input matInput (keyup)="applyTypeDatasourceFilter($event)" #input>
+      </mat-form-field>
+
+      <table mat-table [dataSource]="typeDatasource" #sort1='matSort' matSort>
 
         <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>No.</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
           <td mat-cell *matCellDef="let element">{{element.id}}</td>
         </ng-container>
 
@@ -158,6 +173,7 @@
         <tr mat-header-row *matHeaderRowDef="typeColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: typeColumns;"></tr>
       </table>
+      <mat-paginator [pageSizeOptions]="[5]" #paginator1  aria-label="Select page of reservations"></mat-paginator>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
       <button mat-flat-button color="warn" mat-dialog-close>Cerrar</button>

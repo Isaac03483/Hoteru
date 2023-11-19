@@ -53,6 +53,11 @@
 
 <ng-template #taskTableTemplate>
 
+  <mat-form-field class="mat-mdc-form-field-impl" appearance="outline">
+    <mat-label>Filtrar</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+  </mat-form-field>
+
   <table mat-table [dataSource]="datasource">
 
     <ng-container matColumnDef="id">
@@ -103,4 +108,7 @@
     <tr mat-header-row *matHeaderRowDef="columns"></tr>
     <tr mat-row *matRowDef="let row; columns: columns;"></tr>
   </table>
+
+  <mat-paginator [pageSizeOptions]="[5]"  aria-label="Select page of tasks"></mat-paginator>
+
 </ng-template>

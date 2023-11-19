@@ -10,7 +10,17 @@
   bottom: 15px;
 }
 
-.mat-mdc-form-field-impl {
+.more-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+.dashboard-card-content {
+  text-align: center;
+}
+
+.mat-mdc-form-field {
   font-size: 14px;
   width: 100%;
 }

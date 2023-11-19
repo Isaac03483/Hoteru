@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {EmployeeService} from "../../../../services/employee/employee.service";
 import {EmployeeTypeService} from "../../../../services/employee/employee-type.service";
 import {Employee} from "../../../../core/models/Employee";
@@ -7,13 +7,15 @@ import {FormBuilder, FormControl, FormGroup, FormGroupDirective, Validators} fro
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ModelType} from "../../../../core/models/ModelType";
 import {MatDialog} from "@angular/material/dialog";
+import {MatPaginator} from "@angular/material/paginator";
+import {MatSort} from "@angular/material/sort";
 
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
   styleUrls: ['./employees.component.css']
 })
-export class EmployeesComponent implements OnInit {
+export class EmployeesComponent implements OnInit, AfterViewInit {
 
   types: ModelType[] = [];
   hide: boolean = true;
@@ -22,6 +24,10 @@ export class EmployeesComponent implements OnInit {
   employeeForm: FormGroup;
   employeeTypeControl: FormControl = new FormControl<any>('', Validators.required);
   @ViewChild(FormGroupDirective) formDir!: FormGroupDirective;
+  @ViewChild('paginator1') paginator1!: MatPaginator;
+  @ViewChild('paginator2') paginator2!: MatPaginator;
+  @ViewChild('sort1') sort1!: MatSort;
+  @ViewChild('sort2') sort2!: MatSort;
 
   typeColumns: string[] = ['id', 'type', 'options'];
   typeDatasource: MatTableDataSource<any> = new MatTableDataSource<any>();
@@ -36,6 +42,11 @@ export class EmployeesComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.datasource.paginator = this.paginator2;
+    this.datasource.sort = this.sort2;
+  }
+
   ngOnInit(): void {
     this.getTypes();
     this.getEmployees();
@@ -47,6 +58,8 @@ export class EmployeesComponent implements OnInit {
         next: (response: ModelType[]) => {
           this.types = response;
           this.typeDatasource.data = response;
+          this.typeDatasource.paginator = this.paginator1;
+          this.typeDatasource.sort = this.sort1;
         }
       })
   }
@@ -120,5 +133,23 @@ export class EmployeesComponent implements OnInit {
         }
       }
     })
+  }
+
+  applyTypeDatasourceFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.typeDatasource.filter = filterValue.trim().toLowerCase();
+
+    if (this.typeDatasource.paginator) {
+      this.typeDatasource.paginator.firstPage();
+    }
+  }
+
+  applyDatasourceFilter(event: KeyboardEvent) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.datasource.filter = filterValue.trim().toLowerCase();
+
+    if (this.datasource.paginator) {
+      this.datasource.paginator.firstPage();
+    }
   }
 }
