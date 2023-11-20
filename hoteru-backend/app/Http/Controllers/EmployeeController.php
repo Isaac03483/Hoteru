@@ -78,9 +78,22 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request)
     {
         //
+        $employee = new Employee;
+        $employee->id = $request->id;
+        $employee->name = $request->name;
+        $employee->password = $request->password;
+        $employee->type = $request->type;
+
+        return Employee::query()
+            ->where('id', $employee->id)
+            ->update(['name' => $employee->name,
+                'password' => $employee->password,
+                'employee_type_id' => $employee->type]);
+
+
     }
 
     /**
@@ -89,5 +102,6 @@ class EmployeeController extends Controller
     public function destroy(int $id)
     {
         //
+        return Employee::destroy($id);
     }
 }

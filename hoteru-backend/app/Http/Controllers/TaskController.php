@@ -35,7 +35,7 @@ class TaskController extends Controller
             if($task->employee_id !== 0) {
                 $employee = Employee::query()->select('name')
                     ->where('id', $task->employee_id)->first();
-                $t->employee = $employee->name;
+                $t->employee = $employee->name ?? 'sin nombre';
             } else {
                 $t->employee = 'sin nombre';
             }
@@ -71,7 +71,8 @@ class TaskController extends Controller
             if($task->employee_id !== 0) {
                 $employee = Employee::query()->select('name')
                     ->where('id', $task->employee_id)->first();
-                $t->employee = $employee->name;
+
+                $t->employee = $employee->name ?? 'sin nombre';
             } else {
                 $t->employee = 'sin nombre';
             }
@@ -103,9 +104,12 @@ class TaskController extends Controller
             $t->state = $task->state;
 
             if($task->employee_id !== 0) {
+
                 $employee = Employee::query()->select('name')
                     ->where('id', $task->employee_id)->first();
-                $t->employee = $employee->name;
+
+                $t->employee = $employee->name ?? 'sin nombre';
+
             } else {
                 $t->employee = 'sin nombre';
             }
@@ -147,6 +151,13 @@ class TaskController extends Controller
     {
         //
 
+        $task = new Task;
+        $task->id = $request->id;
+        $task->name = $request->name;
+        $task->description = $request->description;
+
+        return Task::query()->where('id', $task->id)
+            ->update(['name' => $task->name, 'description' => $task->description]);
 
     }
 
@@ -164,8 +175,9 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
         //
+        return Task::destroy($id);
     }
 }

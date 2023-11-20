@@ -89,9 +89,20 @@ class RoomController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
         //
+        $currentDate = date('Y-m-d');
+        $reservations = Reservation::query()
+            ->where('room_id', $id)
+            ->where('end_date', '>=', $currentDate)
+            ->get();
+
+        if(count($reservations) > 0) {
+            abort(400, 'La habitación está reservada');
+        }
+
+        return Room::destroy($id);
     }
 
     private function updateRoomState()

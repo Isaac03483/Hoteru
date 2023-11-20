@@ -13,7 +13,7 @@ class ReportController extends Controller
     {
 
         $today = new \DateTime($currentDate);
-        $tasks = Task::query()->where('date','<=',$today)
+        $tasks = Task::query()->where('date', $today)
             ->select('state as name', DB::raw('COUNT(*) AS value'))
             ->groupBy('state')->get();
 
@@ -53,6 +53,17 @@ class ReportController extends Controller
             })
             ->select('room_types.type as name', DB::raw('COUNT(*) AS value'))
             ->groupBy('room_types.type')
+            ->get();
+    }
+
+    public function bestClients()
+    {
+        return DB::table('reservations')
+            ->join('clients', 'reservations.nit','=','clients.nit')
+            ->select('clients.nit', 'clients.name',
+                DB::raw('COUNT(*) AS count'),
+                DB::raw('SUM(reservations.total) AS total'))
+            ->groupBy('clients.nit')
             ->get();
     }
 }

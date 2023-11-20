@@ -29,8 +29,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::get('employees', [EmployeeController::class, 'index']);
-Route::post('employees', [EmployeeController::class, 'store']);
 Route::get('employees/{id}', [EmployeeController::class, 'show']);
+Route::post('employees', [EmployeeController::class, 'store']);
+Route::put('employees', [EmployeeController::class, 'update']);
+Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
 
 Route::get('employee-types', [EmployeeTypeController::class, 'index']);
 Route::get('employee-types/{id}', [EmployeeTypeController::class, 'show']);
@@ -47,12 +49,15 @@ Route::delete('room-types/{id}', [RoomTypeController::class, 'destroy']);
 Route::get('rooms', [RoomController::class, 'index']);
 Route::post('rooms', [RoomController::class, 'store']);
 Route::get('rooms/available', [RoomController::class, 'findAvailableRooms']);
+Route::delete('rooms/{id}', [RoomController::class, 'destroy']);
 
 Route::get('tasks',  [TaskController::class, 'index']);
 Route::post('tasks', [TaskController::class, 'store']);
+Route::put('tasks', [TaskController::class, 'update']);
 Route::put('tasks/employees', [TaskController::class, 'updateTaskState']);
 Route::get('tasks/undone/{type}', [TaskController::class, 'findEmployeeTypeTasks']);
 Route::get('tasks/my-tasks/{id}', [TaskController::class, 'findEmployeeTasks']);
+Route::delete('tasks/{id}', [TaskController::class, 'destroy']);
 
 Route::get('clients/find/{nit}', [ClientController::class, 'show']);
 
@@ -63,3 +68,4 @@ Route::get('reservations/today', [ReservationController::class, 'todayReservatio
 Route::get('reports/today-tasks/{currentDate}', [ReportController::class, 'countTodayTasks']);
 Route::get('reports/earnings/{init}/{end}', [ReportController::class, 'earnings']);
 Route::get('reports/best-room-types', [ReportController::class, 'bestRoomTypes']);
+Route::get('reports/best-clients', [ReportController::class, 'bestClients']);
