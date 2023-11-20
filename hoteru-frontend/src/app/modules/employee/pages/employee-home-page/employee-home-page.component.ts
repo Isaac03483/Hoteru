@@ -123,6 +123,10 @@ export class EmployeeHomePageComponent implements OnInit, AfterViewInit {
     })
   }
 
+  showTasksDetailsTemplate(templateRef: TemplateRef<any>, data: any) {
+    this.matDialog.open(templateRef, { data });
+  }
+
   applyUndoneFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.undoneDatasource.filter = filterValue.trim().toLowerCase();

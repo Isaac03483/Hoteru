@@ -25,4 +25,8 @@ export class ReportService {
     return this.httpClient.get(`${this.URL}/reports/best-room-types`);
   }
 
+  bestClients() : Observable<any> {
+    return this.httpClient.get(`${this.URL}/reports/best-clients`);
+  }
+
 }

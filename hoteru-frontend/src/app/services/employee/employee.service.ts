@@ -29,4 +29,19 @@ export class EmployeeService {
 
     return this.httpClient.post(`${this.URL}/employees`, body);
   }
+
+  delete(id: number) : Observable<any> {
+    return this.httpClient.delete(`${this.URL}/employees/${id}`);
+  }
+
+  update(id: number, name: string, password: string, type: number) : Observable<any> {
+    const body = {
+      id,
+      name,
+      password,
+      type
+    }
+
+    return this.httpClient.put(`${this.URL}/employees`, body);
+  }
 }

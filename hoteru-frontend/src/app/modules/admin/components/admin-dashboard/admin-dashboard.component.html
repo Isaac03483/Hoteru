@@ -1,7 +1,7 @@
 <div class="grid-container">
   <h1 class="mat-h1">Dashboard</h1>
-  <mat-grid-list cols="2" rowHeight="450px">
-    <mat-grid-tile colspan="1" rowspan="1">
+  <mat-grid-list cols="2" rowHeight="250px">
+    <mat-grid-tile colspan="1" rowspan="2">
       <mat-card class="dashboard-card">
         <mat-card-header>
           <mat-card-title>Gráfica de tareas del día de hoy</mat-card-title>
@@ -14,6 +14,16 @@
     <mat-grid-tile colspan="1" rowspan="2">
       <mat-card class="dashboard-card">
         <mat-card-header>
+          <mat-card-title>Tipos de habitación más solicitados</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="showBestRoomTypesTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="3">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
           <mat-card-title>Reporte de ganancias</mat-card-title>
         </mat-card-header>
         <mat-card-content>
@@ -21,13 +31,13 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile colspan="1" rowspan="1">
+    <mat-grid-tile colspan="1" rowspan="3">
       <mat-card class="dashboard-card">
         <mat-card-header>
-          <mat-card-title>Tipos de habitación más solicitados</mat-card-title>
+          <mat-card-title>Reporte mejores clientes</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <ng-container *ngTemplateOutlet="showBestRoomTypesTemplate"></ng-container>
+          <ng-container *ngTemplateOutlet="bestClientsTableTemplate"></ng-container>
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -78,10 +88,10 @@
     </mat-form-field>
   </form>
 
-  <table mat-table [dataSource]="earningDataSource">
+  <table mat-table [dataSource]="earningDataSource" #earningSort='matSort' matSort>
 
     <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef>No.</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
       <td mat-cell *matCellDef="let element">{{element.date}}</td>
       <td mat-footer-cell *matFooterCellDef> Total </td>
     </ng-container>
@@ -89,7 +99,7 @@
     <ng-container matColumnDef="total">
       <th mat-header-cell *matHeaderCellDef>Ganancias</th>
       <td mat-cell *matCellDef="let element">{{element.total | currency:'Q'}}</td>
-      <td mat-footer-cell *matFooterCellDef> {{ data?.total | currency: 'Q'}} </td>
+      <td mat-footer-cell *matFooterCellDef> {{ data.total  | currency: 'Q'}} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="earningColumns"></tr>
@@ -98,4 +108,37 @@
 
   </table>
 
+  <mat-paginator [pageSizeOptions]="[7]" #earningPaginator aria-label="Select page of reservations"></mat-paginator>
+
+</ng-template>
+
+<ng-template  #bestClientsTableTemplate>
+  <table mat-table [dataSource]="bestClientsDataSource" #bestCSort='matSort' matSort>
+
+    <ng-container matColumnDef="nit">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nit</th>
+      <td mat-cell *matCellDef="let element">{{element.nit}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+      <td mat-cell *matCellDef="let element">{{element.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="count">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Número de reservaciones</th>
+      <td mat-cell *matCellDef="let element">{{element.count}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Total gastado</th>
+      <td mat-cell *matCellDef="let element">{{element.total | currency:'Q'}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="bestClientsColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: bestClientsColumns;"></tr>
+
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[7]" #bestCPaginator aria-label="Select page of clients"></mat-paginator>
 </ng-template>

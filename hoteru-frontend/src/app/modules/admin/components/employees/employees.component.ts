@@ -32,6 +32,12 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
   typeColumns: string[] = ['id', 'type', 'options'];
   typeDatasource: MatTableDataSource<any> = new MatTableDataSource<any>();
 
+
+  updateNameControl: FormControl = new FormControl('');
+  updatePasswordControl: FormControl = new FormControl('');
+  updateTypeControl: FormControl = new FormControl(null);
+  hideUpdate: boolean = true;
+
   constructor(private employeeService: EmployeeService, private employeeTypeService: EmployeeTypeService,
               private builder: FormBuilder, private snackBar: MatSnackBar, private matDialog: MatDialog) {
     this.employeeForm = this.builder.group({
@@ -151,5 +157,68 @@ export class EmployeesComponent implements OnInit, AfterViewInit {
     if (this.datasource.paginator) {
       this.datasource.paginator.firstPage();
     }
+  }
+
+  showConfirmEmployeeTemplate(data: Employee, templateRef: TemplateRef<any>) {
+    this.matDialog.open(templateRef, { data })
+      .afterClosed()
+      .subscribe({
+        next: confirm => {
+          this.employeeService.delete(data.id)
+            .subscribe({
+              next: response => {
+                this.snackBar.open('Empleado eliminado con éxito!', 'Aceptar');
+                this.getEmployees();
+              },
+              error: err => {
+                this.snackBar.open('No se pudo eliminar al Empleado.', 'Cerrar');
+              }
+            })
+        }
+      })
+  }
+
+  getEmployeeTypeId(type: string) : number {
+    const employeeType = this.types.filter(t => t.type === type);
+
+    return employeeType[0].id;
+
+  }
+
+  ShowUpdateEmployeeTemplate(data: any, templateRef: TemplateRef<any>) {
+    this.updateNameControl.setValue(data.name);
+    this.updatePasswordControl.setValue(data.password);
+    this.updateTypeControl.reset();
+    this.matDialog.open(templateRef, { data });
+  }
+
+  updateEmployeeData(data: Employee) {
+    let name = this.updateNameControl.value;
+    let password = this.updatePasswordControl.value;
+    let type = this.updateTypeControl.value;
+
+    if(!name) {
+      name = data.name;
+    }
+
+    if(!password) {
+      password = data.password;
+    }
+
+    if(!type) {
+      type = this.getEmployeeTypeId(data.type);
+    }
+
+    this.employeeService.update(data.id, name, password, type)
+      .subscribe({
+        next: response => {
+          this.snackBar.open('Empleado actualizado con éxito', 'Aceptar');
+          this.getEmployees();
+          this.matDialog.closeAll();
+        },
+        error: err => {
+          this.snackBar.open('No se pudo actualizar al empleado.', 'Cerrar');
+        }
+      })
   }
 }

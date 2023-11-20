@@ -146,6 +146,29 @@ export class RoomsComponent implements OnInit, AfterViewInit {
     })
   }
 
+  deleteRoom(element : Room, templateRef: TemplateRef<any>) {
+    this.matDialog.open(templateRef, { data: element })
+      .afterClosed()
+      .subscribe({
+        next: confirm => {
+          if(confirm) {
+
+            this.roomService.delete(element.id)
+              .subscribe({
+                next: response => {
+                  this.snackBar.open('Se ha eliminado la habitación', 'Aceptar');
+                  this.getRooms();
+                },
+                error: err => {
+                  this.snackBar.open(err.error.message, 'Cerrar');
+                }
+              })
+
+          }
+        }
+      })
+  }
+
 
   applyFilter(event: KeyboardEvent) {
     const filterValue = (event.target as HTMLInputElement).value;

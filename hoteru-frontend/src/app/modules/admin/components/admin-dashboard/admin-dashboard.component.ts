@@ -5,6 +5,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Earning, EarningReport} from "../../../../core/models/Earning";
+import {MatTab} from "@angular/material/tabs";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -21,7 +22,15 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
 
   earningsForm: FormGroup;
   earningColumns: string[] = ['date', 'total'];
-  data!: EarningReport;
+  data: EarningReport = {
+    earnings: [],
+    total: 0
+  };
+
+  bestClientsDataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
+  bestClientsColumns: string[] = ['nit', 'name', 'count','total'];
+  @ViewChild('bestCPaginator') bestCPaginator!: MatPaginator;
+  @ViewChild('bestCSort') bestCSort!: MatSort;
 
   constructor(private reportService: ReportService, private builder: FormBuilder) {
     this.earningsForm = this.builder.group({
@@ -34,12 +43,16 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
     this.getTodayTasksReport();
     this.getBestRoomTypes();
     this.getEarnings();
+    this.getBestClients();
   }
 
 
   ngAfterViewInit(): void {
     this.earningDataSource.paginator = this.earningPaginator;
     this.earningDataSource.sort = this.earningSort;
+
+    this.bestClientsDataSource.paginator = this.bestCPaginator;
+    this.bestClientsDataSource.sort = this.bestCSort;
   }
 
   getTodayTasksReport() {
@@ -73,6 +86,16 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: response => {
           this.bestRoomTypes = response;
+        }
+      })
+  }
+
+  getBestClients() {
+    this.reportService.bestClients()
+      .subscribe({
+        next: response => {
+          console.log(response);
+          this.bestClientsDataSource.data = response;
         }
       })
   }

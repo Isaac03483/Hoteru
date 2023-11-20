@@ -68,7 +68,7 @@
      <ng-container matColumnDef="options">
        <th mat-header-cell *matHeaderCellDef></th>
        <td mat-cell *matCellDef="let element">
-         <button mat-icon-button color="warn">
+         <button mat-icon-button color="warn" (click)="deleteRoom(element, confirmRoomTemplate)">
            <mat-icon>delete</mat-icon>
          </button>
        </td>
@@ -148,7 +148,7 @@
         <ng-container matColumnDef="options">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="warn" (click)="deleteType(element, confirmTemplate)">
+            <button mat-icon-button color="warn" (click)="deleteType(element, confirmTypeTemplate)">
               <mat-icon>delete</mat-icon>
             </button>
           </td>
@@ -164,11 +164,24 @@
   </div>
 </ng-template>
 
-<ng-template #confirmTemplate let-data>
+<ng-template #confirmTypeTemplate let-data>
   <div style="width: 375px">
     <h1 mat-dialog-title>¿Estás seguro?</h1>
     <mat-dialog-content>
       <span>¿Realmente quieres eliminar el tipo de habitación "{{data.type}}"?</span>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" [mat-dialog-close]="true">Eliminar</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="false">Cerrar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #confirmRoomTemplate let-data>
+  <div style="width: 375px">
+    <h1 mat-dialog-title>¿Estás seguro?</h1>
+    <mat-dialog-content>
+      <span>¿Realmente quieres eliminar la habitación "{{data.id}}"?</span>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
       <button mat-flat-button color="primary" [mat-dialog-close]="true">Eliminar</button>

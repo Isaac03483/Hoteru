@@ -22,6 +22,10 @@ export class RoomService {
     return this.httpClient.post(`${this.URL}/rooms`, body);
   }
 
+  delete(id: number) : Observable<any> {
+    return this.httpClient.delete(`${this.URL}/rooms/${id}`);
+  }
+
   findAvailableRooms() : Observable<any> {
     return this.httpClient.get(`${this.URL}/rooms/available`);
   }

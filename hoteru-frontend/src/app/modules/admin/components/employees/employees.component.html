@@ -101,10 +101,12 @@
     <ng-container matColumnDef="options">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" matTooltip="Editar">
+        <button mat-icon-button color="primary" matTooltip="Editar"
+                (click)="ShowUpdateEmployeeTemplate(element, updateEmployeeTemplate)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button color="warn" matTooltip="Eliminar">
+        <button mat-icon-button color="warn" matTooltip="Eliminar"
+                (click)="showConfirmEmployeeTemplate(element, confirmEmployeeTemplate)">
           <mat-icon>delete</mat-icon>
         </button>
       </td>
@@ -163,7 +165,7 @@
         <ng-container matColumnDef="options">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="warn" (click)="deleteType(element, confirmTemplate)"
+            <button mat-icon-button color="warn" (click)="deleteType(element, confirmTypeTemplate)"
                     [disabled]="element.type === 'admin' || element.type === 'recepcionista'">
               <mat-icon>delete</mat-icon>
             </button>
@@ -181,7 +183,7 @@
   </div>
 </ng-template>
 
-<ng-template #confirmTemplate let-data>
+<ng-template #confirmTypeTemplate let-data>
   <div style="width: 375px">
     <h1 mat-dialog-title>¿Estás seguro?</h1>
     <mat-dialog-content>
@@ -190,6 +192,52 @@
     <mat-dialog-actions align="center">
       <button mat-flat-button color="primary" [mat-dialog-close]="true">Eliminar</button>
       <button mat-flat-button color="warn" [mat-dialog-close]="false">Cerrar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #confirmEmployeeTemplate let-data>
+  <div style="width: 375px">
+    <h1 mat-dialog-title>¿Estás seguro?</h1>
+    <mat-dialog-content>
+      <span>¿Realmente quieres eliminar a "{{data.name}}"?</span>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" [mat-dialog-close]="true">Eliminar</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="false">Cerrar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #updateEmployeeTemplate let-data>
+  <div style="width: 450px">
+    <h1 mat-dialog-title>Actualizar empleado</h1>
+    <mat-dialog-content>
+      <h2 class="mat-h2">Actualizando: {{data.username}}</h2>
+      <div class="center">
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Nombre de empleado</mat-label>
+          <input [formControl]="updateNameControl" matInput type="text" placeholder="Ingrese el nombre del empleado">
+        </mat-form-field>
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input [formControl]="updatePasswordControl" matInput [type]="hideUpdate? 'password':'text'" placeholder="Ingrese la contraseña">
+          <button matSuffix mat-icon-button type="button" (click)="hideUpdate = !hideUpdate">
+            <mat-icon>{{ hideUpdate? 'visibility_off':'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Tipo de empleado</mat-label>
+          <mat-select [formControl]="updateTypeControl">
+            <mat-option>Elige una opción</mat-option>
+            <mat-option *ngFor="let type of types" [value]="type.id">{{type.type}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" (click)="updateEmployeeData(data)">Actualizar</button>
+      <button style="margin-left: 10px" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
     </mat-dialog-actions>
   </div>
 </ng-template>
