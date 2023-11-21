@@ -1,0 +1,243 @@
+<div class="grid-container">
+  <h1 class="mat-h1">Empleados</h1>
+  <mat-grid-list cols="3" rowHeight="250px">
+    <mat-grid-tile colspan="1" rowspan="2">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Agregar nuevo empleado</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="saveUserTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="2" rowspan="3">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Empleados</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="userTableTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="1">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Agregar nuevo tipo de empleado</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="saveUserTypeTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
+<!--TEMPLATES-->
+
+<ng-template #saveUserTemplate>
+  <form class="center" [formGroup]="employeeForm" (ngSubmit)="saveEmployee()">
+    <mat-form-field class="form-input" appearance="outline">
+      <mat-label>Nombre de usuario</mat-label>
+      <input formControlName="username" matInput type="text" placeholder="Ingrese el nombre de usuario">
+      <mat-error *ngIf="employeeForm.get('username')?.hasError">El nombre de usuario es obligatorio</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-input" appearance="outline">
+      <mat-label>Nombre de empleado</mat-label>
+      <input formControlName="name" matInput type="text" placeholder="Ingrese el nombre del empleado">
+      <mat-error *ngIf="employeeForm.get('name')?.hasError">El nombre del empleado es obligatorio</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-input" appearance="outline">
+      <mat-label>Contraseña</mat-label>
+      <input formControlName="password" matInput [type]="hide? 'password':'text'" placeholder="Ingrese la contraseña">
+      <button matSuffix mat-icon-button type="button" (click)="hide = !hide">
+        <mat-icon>{{ hide? 'visibility_off':'visibility' }}</mat-icon>
+      </button>
+      <mat-error *ngIf="employeeForm.get('password')?.hasError('required')">La contraseña es obligatoria</mat-error>
+      <mat-error *ngIf="employeeForm.get('password')?.hasError('minlength')">La contraseña debe poseer al menos 8 carácteres</mat-error>
+    </mat-form-field>
+    <mat-form-field class="form-input" appearance="outline">
+      <mat-label>Tipo de empleado</mat-label>
+      <mat-select formControlName="type">
+        <mat-option>Elige una opción</mat-option>
+        <mat-option *ngFor="let type of types" [value]="type.id">{{type.type}}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="employeeForm.get('type')?.hasError">El tipo es obligatorio</mat-error>
+    </mat-form-field>
+    <button [disabled]="employeeForm.invalid && employeeForm.touched" mat-flat-button color="primary">Agregar</button>
+  </form>
+</ng-template>
+
+<ng-template #userTableTemplate>
+
+  <mat-form-field class="mat-mdc-form-field-impl" appearance="outline">
+    <mat-label>Filtrar</mat-label>
+    <input matInput (keyup)="applyDatasourceFilter($event)" #input>
+  </mat-form-field>
+
+  <table mat-table [dataSource]="datasource" #sort2='matSort' matSort>
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+      <td mat-cell *matCellDef="let element">{{element.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="username">
+      <th mat-header-cell *matHeaderCellDef>Nombre de usuario</th>
+      <td mat-cell *matCellDef="let element">{{element.username}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Nombre del empleado</th>
+      <td mat-cell *matCellDef="let element">{{element.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>tipo de empleado</th>
+      <td mat-cell *matCellDef="let element">{{element.type}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="options">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" matTooltip="Editar"
+                (click)="ShowUpdateEmployeeTemplate(element, updateEmployeeTemplate)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" matTooltip="Eliminar"
+                (click)="showConfirmEmployeeTemplate(element, confirmEmployeeTemplate)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5]" #paginator2 aria-label="Select page of reservations"></mat-paginator>
+
+</ng-template>
+
+<ng-template #saveUserTypeTemplate>
+  <div class="center">
+    <mat-form-field class="form-input" appearance="outline">
+      <mat-label>Nombre</mat-label>
+      <input [formControl]="employeeTypeControl" matInput placeholder="Ingrese el nombre del tipo">
+      <mat-error *ngIf="employeeTypeControl.hasError">Este campo es obligatorio.</mat-error>
+    </mat-form-field>
+    <div>
+      <button type="submit" [disabled]="employeeTypeControl.invalid && employeeTypeControl.touched"
+              mat-flat-button color="primary" (click)="saveEmployeeType()">
+        Agregar
+      </button>
+      <button type="button" mat-flat-button color="accent" style="margin-left: 10px"
+              (click)="showUserTypeTable(userTypeTableTemplate)">
+        Ver tipos
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #userTypeTableTemplate>
+  <div style="width: 500px">
+    <h1 mat-dialog-title>Tipos de usuario</h1>
+    <mat-dialog-content>
+
+      <mat-form-field class="mat-mdc-form-field-impl" appearance="outline">
+        <mat-label>Filtrar</mat-label>
+        <input matInput (keyup)="applyTypeDatasourceFilter($event)" #input>
+      </mat-form-field>
+
+      <table mat-table [dataSource]="typeDatasource" #sort1='matSort' matSort>
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+          <td mat-cell *matCellDef="let element">{{element.id}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Nombre</th>
+          <td mat-cell *matCellDef="let element">{{element.type}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="options">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="warn" (click)="deleteType(element, confirmTypeTemplate)"
+                    [disabled]="element.type === 'admin' || element.type === 'recepcionista'">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="typeColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: typeColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5]" #paginator1  aria-label="Select page of reservations"></mat-paginator>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #confirmTypeTemplate let-data>
+  <div style="width: 375px">
+    <h1 mat-dialog-title>¿Estás seguro?</h1>
+    <mat-dialog-content>
+      <span>¿Realmente quieres eliminar a "{{data.type}}"?</span>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" [mat-dialog-close]="true">Eliminar</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="false">Cerrar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #confirmEmployeeTemplate let-data>
+  <div style="width: 375px">
+    <h1 mat-dialog-title>¿Estás seguro?</h1>
+    <mat-dialog-content>
+      <span>¿Realmente quieres eliminar a "{{data.name}}"?</span>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" [mat-dialog-close]="true">Eliminar</button>
+      <button mat-flat-button color="warn" [mat-dialog-close]="false">Cerrar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>
+
+<ng-template #updateEmployeeTemplate let-data>
+  <div style="width: 450px">
+    <h1 mat-dialog-title>Actualizar empleado</h1>
+    <mat-dialog-content>
+      <h2 class="mat-h2">Actualizando: {{data.username}}</h2>
+      <div class="center">
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Nombre de empleado</mat-label>
+          <input [formControl]="updateNameControl" matInput type="text" placeholder="Ingrese el nombre del empleado">
+        </mat-form-field>
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input [formControl]="updatePasswordControl" matInput [type]="hideUpdate? 'password':'text'" placeholder="Ingrese la contraseña">
+          <button matSuffix mat-icon-button type="button" (click)="hideUpdate = !hideUpdate">
+            <mat-icon>{{ hideUpdate? 'visibility_off':'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Tipo de empleado</mat-label>
+          <mat-select [formControl]="updateTypeControl">
+            <mat-option>Elige una opción</mat-option>
+            <mat-option *ngFor="let type of types" [value]="type.id">{{type.type}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button mat-flat-button color="primary" (click)="updateEmployeeData(data)">Actualizar</button>
+      <button style="margin-left: 10px" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+    </mat-dialog-actions>
+  </div>
+</ng-template>

@@ -1,0 +1,26 @@
+.grid-container {
+  margin: 20px;
+}
+
+.dashboard-card {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+}
+
+.textarea-input {
+  width: 20rem;
+  height: 25rem;
+  margin-bottom: 20px;
+}
+
+textarea {
+  resize: none;
+}
+
+.mat-mdc-form-field-impl {
+  font-size: 14px;
+  width: 100%;
+}

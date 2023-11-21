@@ -1,0 +1,66 @@
+<div class="grid-container">
+  <h1 class="mat-h1">Reservaciones</h1>
+  <mat-grid-list cols="2" rowHeight="350px">
+    <mat-grid-tile colspan="2" rowspan="2">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>Listado de reservaciones</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ng-container *ngTemplateOutlet="reservationsTableTemplate"></ng-container>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
+<!--TEMPLATES-->
+<ng-template #reservationsTableTemplate>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Filtrar</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+  </mat-form-field>
+
+  <table mat-table [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+      <td mat-cell *matCellDef="let element">{{element.id}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="nit">
+      <th mat-header-cell *matHeaderCellDef>Nit</th>
+      <td mat-cell *matCellDef="let element">{{element.nit}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="roomId">
+      <th mat-header-cell *matHeaderCellDef>No. habitación</th>
+      <td mat-cell *matCellDef="let element">{{element.roomId}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Fecha de reservación</th>
+      <td mat-cell *matCellDef="let element">{{element.date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="initDate">
+      <th mat-header-cell *matHeaderCellDef>Fecha de inicio</th>
+      <td mat-cell *matCellDef="let element">{{element.initDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="endDate">
+      <th mat-header-cell *matHeaderCellDef>fecha de finalización</th>
+      <td mat-cell *matCellDef="let element">{{element.endDate}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef>total</th>
+      <td mat-cell *matCellDef="let element">{{element.total}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5]"  aria-label="Select page of reservations"></mat-paginator>
+</ng-template>

@@ -1,0 +1,29 @@
+<mat-toolbar color="primary">
+  <span>Hoteru</span>
+</mat-toolbar>
+
+<div class="center container">
+  <mat-card class="center login-container">
+    <mat-card-header>
+      <mat-card-title style="font-size: 2rem;">Iniciar Sesión</mat-card-title>
+    </mat-card-header>
+    <mat-card-content style="margin-top: 20px">
+      <form class="center" [formGroup]="authForm" (ngSubmit)="validate()">
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Nombre de usuario</mat-label>
+          <input formControlName="username" matInput type="text" placeholder="Ingrese su nombre de usuario">
+          <mat-error *ngIf="authForm.get('username')?.hasError">El nombre de usuario es obligatorio</mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-input" appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input formControlName="password" matInput [type]="hide? 'password': 'text'" placeholder="Ingrese su contraseña">
+          <button type="button" matSuffix mat-icon-button (click)="hide = !hide">
+            <mat-icon> {{ hide? 'visibility_off' : 'visibility' }} </mat-icon>
+          </button>
+          <mat-error *ngIf="authForm.get('password')?.hasError">La contraseña es obligatoria</mat-error>
+        </mat-form-field>
+        <button [disabled]="authForm.invalid" mat-flat-button color="primary">Ingresar</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
