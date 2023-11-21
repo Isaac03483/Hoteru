@@ -65,7 +65,7 @@ Route::get('reservations', [ReservationController::class, 'index']);
 Route::post('reservations', [ReservationController::class, 'store']);
 Route::get('reservations/today', [ReservationController::class, 'todayReservations']);
 
-Route::get('reports/today-tasks/{currentDate}', [ReportController::class, 'countTodayTasks']);
+Route::get('reports/today-tasks', [ReportController::class, 'countTodayTasks']);
 Route::get('reports/earnings/{init}/{end}', [ReportController::class, 'earnings']);
 Route::get('reports/best-room-types', [ReportController::class, 'bestRoomTypes']);
 Route::get('reports/best-clients', [ReportController::class, 'bestClients']);

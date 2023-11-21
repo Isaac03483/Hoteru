@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\DB;
 class ReportController extends Controller
 {
     //
-    public function countTodayTasks($currentDate)
+    public function countTodayTasks()
     {
 
-        $today = new \DateTime($currentDate);
+        $today = date('Y-m-d');
         $tasks = Task::query()->where('date', $today)
             ->select('state as name', DB::raw('COUNT(*) AS value'))
             ->groupBy('state')->get();
