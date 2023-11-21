@@ -110,7 +110,7 @@ export class RecepHomePageComponent implements OnInit, AfterViewInit {
   }
 
   getRooms() {
-    this.roomService.findAvailableRooms()
+    this.roomService.findAll()
       .subscribe({
         next: (rooms: Room[]) => {
           this.dataSource.data = rooms;

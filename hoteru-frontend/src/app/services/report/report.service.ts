@@ -12,8 +12,7 @@ export class ReportService {
   constructor(private httpClient: HttpClient) { }
 
   findTodayTasks() : Observable<any> {
-    const today = new Date().toISOString();
-    return this.httpClient.get(`${this.URL}/reports/today-tasks/${today}`);
+    return this.httpClient.get(`${this.URL}/reports/today-tasks`);
   }
 
 
