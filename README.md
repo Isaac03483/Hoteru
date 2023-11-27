@@ -1,5 +1,7 @@
 # Hoteru
 
+This proyect was created by: Leví Isaac Hernández Sapón - 201930693
+
 **Technologies used in this project:**
 
 - Angular
